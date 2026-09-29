@@ -44,7 +44,7 @@ jobs:
               docker pull ${{ secrets.DOCKER_USERNAME }}/bookstore-backend:v1
               docker stop bookstore-backend || true
               docker rm bookstore-backend || true
-              docker run -d \
+              docker run  \
               --name bookstore-backend \
               -p 8085:8080 \
               ${{ secrets.DOCKER_USERNAME }}/bookstore-backend:v1
