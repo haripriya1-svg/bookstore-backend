@@ -39,27 +39,18 @@ jobs:
           docker push \
             ${{ secrets.DOCKER_USERNAME }}/bookstore-backend:${{ github.sha }}
 
-      - name: Configure Kubernetes
-        run: |
-          mkdir -p "$HOME/.kube"
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > "$HOME/.kube/config"
-          chmod 600 "$HOME/.kube/config"
-
-      - name: Check Kubernetes Connection
-        run: kubectl get nodes
-
-      
-      
+     
       - name: Configure Kubernetes
         shell: bash
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         run: |
-          set -euo pipefail
+          set -e
           mkdir -p "$HOME/.kube"
           printf '%s\n' "$KUBE_CONFIG" > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
           kubectl config current-context
           kubectl get nodes
+
 
        
