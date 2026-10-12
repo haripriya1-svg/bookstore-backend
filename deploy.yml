@@ -1,7 +1,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: gceme-backend-production
+  name: gceme-backend
 spec:
   replicas: 1
   selector:
