@@ -52,12 +52,14 @@ jobs:
       - name: Configure Kubernetes
         shell: bash
         env:
-          KUBE_CONFIG_RAW: ${{ secrets.KUBE_CONFIG }}
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         run: |
           set -euo pipefail
 
           mkdir -p "$HOME/.kube"
-          printf '%s\n' "$KUBE_CONFIG_RAW" > "$HOME/.kube/config"
+
+          printf '%s\n' "$KUBE_CONFIG" > "$HOME/.kube/config"
+
           chmod 600 "$HOME/.kube/config"
 
           kubectl config current-context
