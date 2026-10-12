@@ -52,20 +52,12 @@ jobs:
       - name: Configure Kubernetes
         shell: bash
         env:
-          KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG }}
+          KUBE_CONFIG_RAW: ${{ secrets.KUBE_CONFIG }}
         run: |
           set -euo pipefail
 
-          if [ -z "$KUBE_CONFIG_B64" ]; then
-            echo "KUBE_CONFIG secret is empty or unavailable."
-            exit 1
-          fi
-
           mkdir -p "$HOME/.kube"
-
-          printf '%s' "$KUBE_CONFIG_B64" \
-            | base64 --decode > "$HOME/.kube/config"
-
+          printf '%s\n' "$KUBE_CONFIG_RAW" > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
 
           kubectl config current-context
