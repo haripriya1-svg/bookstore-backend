@@ -1,15 +1,14 @@
-
-
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  name: gceme-backend
+  name: my-app-service
+  labels:
+    app: my-app
 spec:
-  ports:
-  - name: http
-    port: 8080
-    targetPort: 8080
-    protocol: TCP
+  type: LoadBalancer
   selector:
-    role: backend
-    app: gceme
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
