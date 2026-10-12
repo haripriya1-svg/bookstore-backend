@@ -48,18 +48,27 @@ jobs:
       - name: Check Kubernetes Connection
         run: kubectl get nodes
 
-      - name: Deploy to Kubernetes
+      
+      - name: Configure Kubernetes
+        shell: bash
+        env:
+          KUBE_CONFIG_B64: ${{ secrets.KUBE_CONFIG }}
         run: |
-          kubectl apply -f k8s/deploy.yml
-          kubectl apply -f k8s/service.yml
+          set -euo pipefail
 
-          kubectl set image deployment/my-app-deployment \
-            my-app-container=${{ secrets.DOCKER_USERNAME }}/bookstore-backend:${{ github.sha }}
+          if [ -z "$KUBE_CONFIG_B64" ]; then
+            echo "KUBE_CONFIG secret is empty or unavailable."
+            exit 1
+          fi
 
-          kubectl rollout status deployment/my-app-deployment --timeout=180s
+          mkdir -p "$HOME/.kube"
 
-      - name: Verify Deployment
-        run: |
-          kubectl get deployments
-          kubectl get pods
-          kubectl get services
+          printf '%s' "$KUBE_CONFIG_B64" \
+            | base64 --decode > "$HOME/.kube/config"
+
+          chmod 600 "$HOME/.kube/config"
+
+          kubectl config current-context
+          kubectl get nodes
+
+       
