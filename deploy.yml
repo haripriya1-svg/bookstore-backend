@@ -1,35 +1,21 @@
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: gceme-backend
+  name: my-app-deployment
+  labels:
+    app: my-app
 spec:
-  replicas: 1
+  replicas: 3
   selector:
-      matchLabels:
-          app: gceme
-          role: backend
-          env: production
+    matchLabels:
+      app: my-app
   template:
     metadata:
-      name: backend
       labels:
-        app: gceme
-        role: backend
-        env: production
+        app: my-app
     spec:
       containers:
-      - name: backend
-        image: haripriya1310/bookstore-backend
-        resources:
-          limits:
-            memory: "500Mi"
-            cpu: "100m"
-        imagePullPolicy: Always
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 8080
-        command: ["sh", "-c", "app -port=8080"]
-        ports:
-        - name: backend
-          containerPort: 8080
+        - name: my-app-container
+          image: haripriya1310/bookstore-backend
+          ports:
+            - containerPort: 8080
