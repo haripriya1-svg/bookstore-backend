@@ -45,12 +45,17 @@ jobs:
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         run: |
-          set -e
+          set -euo pipefail
+
           mkdir -p "$HOME/.kube"
+
           printf '%s\n' "$KUBE_CONFIG" > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
+
+          echo "Validating Kubernetes configuration..."
+
+          kubectl config view --minify
           kubectl config current-context
-          kubectl get nodes
 
 
        
