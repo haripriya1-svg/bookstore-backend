@@ -41,23 +41,15 @@ jobs:
 
      
       
+     
+
       - name: Configure Kubernetes
-        shell: bash
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         run: |
-          set -euo pipefail
+             mkdir -p "$HOME/.kube"
+             echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > "$HOME/.kube/config"
+             chmod 600 "$HOME/.kube/config"
 
-          mkdir -p "$HOME/.kube"
-
-          printf '%s\n' "$KUBE_CONFIG" > "$HOME/.kube/config"
-          chmod 600 "$HOME/.kube/config"
-
-          echo "Validating Kubernetes configuration..."
-
-          kubectl config view --minify
-          kubectl config current-context
-
-
+      - name: Deploy application
+        run: kubectl apply -f deployment.yml
 
        
