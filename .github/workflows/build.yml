@@ -1,4 +1,4 @@
-```yaml
+
 name: Java Application Build and Kubernetes Deploy
 
 on:
@@ -75,4 +75,3 @@ jobs:
           echo "Waiting for deployment rollout..."
           kubectl rollout status deployment/bookstore-backend \
             --timeout=180s
-```
