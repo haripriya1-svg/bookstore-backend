@@ -59,7 +59,7 @@ jobs:
 
           kubectl config view --minify
           kubectl config current-context
-          kubctl apply -f deployment.yml
-          kubctl apply -f service.yml
+          kubectl apply -f deployment.yml
+          kubectl apply -f service.yml
 
        
