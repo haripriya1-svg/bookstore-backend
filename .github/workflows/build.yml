@@ -1,4 +1,4 @@
-
+```yaml
 name: Java Application Build and Kubernetes Deploy
 
 on:
@@ -39,9 +39,17 @@ jobs:
           docker push \
             ${{ secrets.DOCKER_USERNAME }}/bookstore-backend:${{ github.sha }}
 
-     
-      
-     
+      - name: Diagnose Kubernetes API Connectivity
+        run: |
+          echo "Checking network routes..."
+          ip route
+
+          echo "Checking Kubernetes API port..."
+          nc -vz -w 5 172.31.30.220 6443
+
+          echo "Checking Kubernetes API readiness endpoint..."
+          curl -k -v --connect-timeout 5 \
+            https://172.31.30.220:6443/readyz
 
       - name: Configure Kubernetes
         shell: bash
@@ -51,15 +59,20 @@ jobs:
           set -euo pipefail
 
           mkdir -p "$HOME/.kube"
-
           printf '%s\n' "$KUBE_CONFIG" > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
 
           echo "Validating Kubernetes configuration..."
-
-          kubectl config view --minify
           kubectl config current-context
+
+          echo "Checking Kubernetes cluster access..."
+          kubectl get nodes
+
+          echo "Deploying application..."
           kubectl apply -f deployment.yml
           kubectl apply -f service.yml
 
-       
+          echo "Waiting for deployment rollout..."
+          kubectl rollout status deployment/bookstore-backend \
+            --timeout=180s
+```
