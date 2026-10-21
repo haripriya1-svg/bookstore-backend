@@ -72,6 +72,4 @@ jobs:
           kubectl apply -f deployment.yml
           kubectl apply -f service.yml
 
-          echo "Waiting for deployment rollout..."
-          kubectl rollout status deployment/bookstore-backend \
-            --timeout=180s
+        
